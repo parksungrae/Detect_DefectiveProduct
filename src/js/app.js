@@ -31,11 +31,26 @@ App = {
 
       return App.render();
     });
+    //Factory
+    /*
+    $.getJSON("Factory.json", function(Factory){
+        App.contracts.Factory = TruffleContract(Factory);
+
+        App.contracts.Factory.setProvider(App.web3Provider);
+
+        App.listenForEvents();
+
+        return App.render();
+      });
+
+    */
 
   },
 
   // Listen for events emitted from the contract
   listenForEvents: function(){
+    //Factory
+    //App.contracts.Factory.deployed().then(function(instance){
     App.contracts.Election.deployed().then(function(instance){
       // Restart Chrome if you are unable to receive this event
       // This is a known issue with Metamask
