@@ -21,59 +21,27 @@ App = {
   },
 
   initContract: function() {
-    $.getJSON("Election.json", function(election){
-      //Instantiate a new truffle contract from the artifact
-      App.contracts.Election = TruffleContract(election);
-      //Connect provider to interact with contract
-      App.contracts.Election.setProvider(App.web3Provider);
-
-      App.listenForEvents();
-
-      return App.render();
-    });
-    //Factory
-    /*
+    
     $.getJSON("Factory.json", function(Factory){
         App.contracts.Factory = TruffleContract(Factory);
 
         App.contracts.Factory.setProvider(App.web3Provider);
 
-        App.listenForEvents();
-
         return App.render();
-      });
-
-    */
-
-  },
-
-  // Listen for events emitted from the contract
-  listenForEvents: function(){
-    //Factory
-    //App.contracts.Factory.deployed().then(function(instance){
-    App.contracts.Election.deployed().then(function(instance){
-      // Restart Chrome if you are unable to receive this event
-      // This is a known issue with Metamask
-
-      instance.votedEvent({},{
-        fromBlock: 0,
-        toBlock: 'latest'
-      }).watch(function(error, event){
-        console.log("event triggered", event);
-        // Reload when a new vote is recorded
-        App.render();
-      })
     })
+    
+
   },
+
 
   render: function(){
-    var electionInstance;
+    var FactoryInstance;
+    //var electionInstance;
     var loader = $("#loader");
     var content = $("#content");
 
-    loader.show();
-    content.hide();
-
+    loader.hide();
+    content.show();
     //Load account data
     web3.eth.getCoinbase(function(err, account){
       if (err == null){
@@ -83,54 +51,44 @@ App = {
     });
 
     //Load contract data
-    App.contracts.Election.deployed().then(function(instance){
-      electionInstance = instance;
-      return electionInstance.candidatesCount();
-    }).then(function(candidatesCount){
-      var candidatesResults = $("#candidatesResults");
-      candidatesResults.empty();
+    App.contracts.Factory.deployed().then(function(instance){
+      
+      FactoryInstance = instance;
+      console.log(FactoryInstance.ProductCount());
+      return FactoryInstance.ProductCount();
+    }).then(function(ProductCount){
+      var ProductResults = $("#ProductResults");
+      ProductResults.empty();
 
-      var candidatesSelect = $("#candidatesSelect");
-      candidatesSelect.empty();
+      var ProductSelect = $("#ProductSelect");
+      ProductSelect.empty();
+      console.log(ProductCount);
 
-      for(var i=1; i<=candidatesCount; i++){
-        electionInstance.candidates(i).then(function(candidate){
-          var id = candidate[0];
-          var name = candidate[1];
-          var voteCount = candidate[2];
+      for(var i=1; i<=ProductCount; i++){
+        FactoryInstance.Defective_Products(i).then(function(Product){
+          var id = Product[0];
+          var name = Product[1];
+          var Defect_type = Product[2];
 
           // Render candidate Result
-          var candidateTemplate = "<tr><th>" + id + "</th><td>" + name + "</td><td>" + voteCount + "</td></tr>"
-          candidatesResults.append(candidateTemplate);
+          var ProductTemplate = "<tr><th>" + id + "</th><td>" + name + "</td><td>" + Defect_type + "</td></tr>"
+          ProductResults.append(ProductTemplate);
 
           // Render candidate ballot option
-          var candidateOption = "<option value='"+id+"' >" + name + "</option>"
-          candidatesSelect.append(candidateOption);
+          var ProductOption = "<option value='"+id+"' >" + name + "</option>"
+          ProductSelect.append(ProductOption);
         });
       }
-      return electionInstance.voters(App.account);
-    }).then(function(hasVoted){
-      // Do not allow a user to vote
-      if(hasVoted) {
-        $('form').hide();
-      }
-      loader.hide();
-      content.show();
-    }).catch(function(error){
-      console.warn(error);
+      return FactoryInstance.true;
     });
 
   },
 
-  castVote: function(){
-    var candidateId = $('#candidatesSelect').val();
-    App.contracts.Election.deployed().then(function(instance){
-      return instance.vote(candidateId, {from: App.account});
-    }).then(function(result){
-      // Wait for votes to update
-      $("#content").hide();
-      $("#loader").show();
-    })
+  addProduct: function(){
+    var FactoryId = ProductCount;
+    App.contracts.Factory.deployed().then(function(instance){
+      return instance.addDefectiveProduct(FactoryId, "a", {from: App.account});
+    });
   },
 
 };

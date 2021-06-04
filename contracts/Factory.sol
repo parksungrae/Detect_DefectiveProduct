@@ -15,14 +15,17 @@ contract Factory {
     uint public ProductCount;
 
     constructor() public {
-        addDefectiveProduct("Product 1", "a");
+        addDefectiveProduct("Product 1", "d");
         addDefectiveProduct("Product 2", "a");
         addDefectiveProduct("Product 3", "b");
     }
 
     function addDefectiveProduct (string memory _name, string memory _Defect_type) private {
         ProductCount ++;
-        Defective_Products[ProductCount] = Product(ProductCount, _name, "a");
+        Defective_Products[ProductCount] = Product(ProductCount, _name, _Defect_type);
     }
 
+    function getInfo(uint _id) public view returns(uint,string memory, string memory) {
+        return(Defective_Products[_id].id,Defective_Products[_id].name,Defective_Products[_id].Defect_type);
+    }
 }
