@@ -20,8 +20,8 @@ contract Factory {
         addDefectiveProduct("Product 3", "b");
     }
 
-    function addDefectiveProduct (string memory _name, string memory _Defect_type) private {
-        ProductCount ++;
+    function addDefectiveProduct (string memory _name, string memory _Defect_type) public {
+        ProductCount++;
         Defective_Products[ProductCount] = Product(ProductCount, _name, _Defect_type);
     }
 

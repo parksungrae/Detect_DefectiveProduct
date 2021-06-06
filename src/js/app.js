@@ -85,9 +85,10 @@ App = {
   },
 
   addProduct: function(){
-    var FactoryId = ProductCount;
+    var ProductName = document.getElementById('ProductName').value;
+    console.log(ProductName);
     App.contracts.Factory.deployed().then(function(instance){
-      return instance.addDefectiveProduct(FactoryId, "a", {from: App.account});
+      return instance.addDefectiveProduct(ProductName, "aaa", {from: App.account});
     });
   },
 
