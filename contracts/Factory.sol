@@ -25,7 +25,4 @@ contract Factory {
         Defective_Products[ProductCount] = Product(ProductCount, _name, _Defect_type);
     }
 
-    function getInfo(uint _id) public view returns(uint,string memory, string memory) {
-        return(Defective_Products[_id].id,Defective_Products[_id].name,Defective_Products[_id].Defect_type);
-    }
 }
